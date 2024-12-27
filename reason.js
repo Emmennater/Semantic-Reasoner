@@ -146,7 +146,7 @@ function getAllPermutations(statement, vars) {
 function reasonTF(statement, axioms) {
   const vars = getVars(statement);
   const allPerms = axioms.flatMap(axiom => getAllPermutations(axiom, vars));
-  const known = allPerms.map(axiom => `(${axiom})`).join(' & ');
+  const known = allPerms.map(axiom => `(${axiom})`).join(' & ') || '1';
   const unkown = statement; // statement.replaceAll("=>", "&")
   const check = known + " & (" + unkown + ")";
   const expr = parse(check);
