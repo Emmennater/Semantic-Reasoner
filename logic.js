@@ -24,10 +24,10 @@ class LogicTree {
     }
 
     // No axioms
-    if (this.axioms.length === 0) {
-      this.addAxiom(statement);
-      return undefined;
-    }
+    // if (this.axioms.length === 0) {
+    //   this.addAxiom(statement);
+    //   return undefined;
+    // }
 
     let result = reasonTF(statement, this.axioms);
 
