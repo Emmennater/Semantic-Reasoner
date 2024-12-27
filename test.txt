@@ -1,0 +1,60 @@
+Test Cases
+- exists x such that if x is a rectangle then x is a square
+- x is y or x is z
+- for all x if x is not red then x is not pink or x is not blue
+- exists unique x such that if x is not red then x is not pink or x is not blue
+- all water is wet, some water is wet
+- some water that is blue is not wet or dry
+- for all x, y if x is a rectangle and y is a square then if x is a rectangle then y is a square
+- all water that is blue is not wet
+- every cat is a mammal
+every mammal is an animal
+every cat is an animal
+- every cat is a mammal
+for all x if x is not a mammal then x is a cat
+- for all x if x is a cat then x is a mammal
+for all x if x is a mammal then x is an animal
+for all x if x is a cat then x is an animal
+- for all x if x is a cat then x is a mammal
+- if x is a mammal then x is not a plant
+if x is living then x is a mammal or x is a plant
+if x is not moving then x is a plant or x is not living
+if x is a mammal and x is not moving then x is not living
+- if x is wet then x is not dry
+y is dry and y is wet
+- x is y
+x is not y
+x is small
+x is bigger than y
+x is dominating y
+x is dancing with y
+x is like y
+x is fancy of y
+x is not a fan of y
+x is caring of y
+x is not caring of y
+x is not liking y
+x is liking y
+- if x is hot and y is cold then if x is mixed with y then x is warm
+- for all x x is hot xor x is warm xor x is cold
+for all x, y, z if x is hot and y is cold and z is x mixed with y then z is warm
+for all x, y if x is cold and x mixed with y is not warm then y is not hot
+- if x_mixed_with_y_is_warm then y_mixed_with_x_is_warm
+if y_mixed_with_x_is_warm then x_mixed_with_y_is_warm
+if x_is_hot and y_is_cold then x_mixed_with_y_is_warm
+if y_is_hot and x_is_cold then y_mixed_with_x_is_warm
+x_is_cold and y_is_hot and not x_mixed_with_y_is_warm
+- x is hot xor x is warm xor x is cold
+if x mixed with y is warm then y mixed with x is warm
+if x is hot and y is cold then x mixed with y is warm
+if x is cold and not x mixed with y is warm then not y is hot
+- if x has a good professor and x enjoys the subjects then x has a good school life
+if x has a good professor and x enjoys the subjects and x likes the food then x has a superb school life
+if not x has a good school life and not x has a superb school life then x has a bad school life
+x has a good school life xor x has a superb school life xor x has a bad school life
+if not (x has a bad school life) then x has a good school life or x has a superb school life
+if x shares classes with y and x shares interests with y and not (x has a bad school life) then not (y has a bad school life)
+if x likes y then x shares interests with y
+if x shares classes with y then y shares classes with x
+if x shares interests with y then y shares interests with x
+if x shares classes with y and x likes y and y has a good school life then x has a bad school life

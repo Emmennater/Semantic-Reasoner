@@ -1,0 +1,19 @@
+.quantifier {
+  color: red;
+}
+
+.linking-verb {
+  color: lime;
+}
+
+.implication {
+  color: magenta; 
+}
+
+.brackets {
+  color: #444;
+}
+
+.junction {
+  color: aqua;
+}

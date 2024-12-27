@@ -1,0 +1,525 @@
+class LogicTree {
+  constructor() {
+    this.tree = [];
+  }
+
+  addStatement(statement) {
+    const parsed = this.parseStatement(statement);
+    
+    if (!parsed) {
+      throw new Error("Invalid statement format");
+    }
+
+    const valid = this.check(parsed);
+
+    if (valid == true || valid == undefined) {
+      this.learn(parsed);
+    }
+
+    return valid;
+  }
+  
+  tokenizeStatement(statement) {
+    const tokens = [];
+    const words = statement.replace(/([\w])([,.:;(){}\[\]])|([\w])(?=[A-Z])/g, "$1 $2").split(" ");
+    
+    for (let i = 0; i < words.length; i++) {
+      if (words[i] == "") continue;
+      
+      if (words[i] == "is" && words[i + 1] == "not" && words[i + 2] == "a") {
+        tokens.push(words[i] + " " + words[i + 1] + " " + words[i + 2]);
+        i += 2;
+      } else if (words[i] == "is" && words[i + 1] == "not" && words[i + 2] == "an") {
+        tokens.push(words[i] + " " + words[i + 1] + " " + words[i + 2]);
+        i += 2;
+      } else if (words[i] == "is" && words[i + 1] == "a") {
+        tokens.push(words[i] + " " + words[i + 1]);
+        i++;
+      } else if (words[i] == "is" && words[i + 1] == "an") {
+        tokens.push(words[i] + " " + words[i + 1]);
+        i++;
+      } else if (words[i] == "is" && words[i + 1] == "not") {
+        tokens.push(words[i] + " " + words[i + 1]);
+        i++;
+      } else if (words[i] == "such" && words[i + 1] == "that") {
+        tokens.push(words[i] + " " + words[i + 1]);
+        i++;
+      } else if (words[i] == "for" && words[i + 1] == "all") {
+        tokens.push(words[i] + " " + words[i + 1]);
+        i++;
+      } else if (words[i] == ",") {
+        tokens.push(words[i]);
+      } else {
+        tokens.push(words[i]);
+      }
+    }
+    
+    function removeSyntaxSugar(token) {
+      switch (token) {
+        case "is a":
+        case "is an":
+          return "is";
+        case "is not a":
+        case "is not an":
+          return "is not";
+        case "every":
+          return "all";
+        default:
+          return token;
+      }
+    }
+
+    for (let i = 0; i < tokens.length; i++) {
+      tokens[i] = removeSyntaxSugar(tokens[i]);
+    }
+
+    // print(tokens);
+
+    return tokens;
+  }
+
+  parseStatement(statement) {
+    const TREE = this;
+    let tokens = this.tokenizeStatement(statement);
+    let tokenIndex = -1;
+
+    function getToken(offset = 0) {
+      if (tokens.length > tokenIndex + offset && tokenIndex + offset >= 0) {
+        return tokens[tokenIndex + offset];
+      }
+    }
+
+    function nextToken() {
+      if (tokens.length > 0) {
+        return tokens[++tokenIndex];
+      }
+    }
+
+    function advanceToken(amount = 1) {
+      if (tokens.length > 0) {
+        tokenIndex += amount;
+      }
+    }
+    
+    function expectToken(...expected) {
+      const token = nextToken();
+      
+      for (const expect of expected) {
+        if (token == expected) {
+          return true;
+        }
+      }
+
+      let expectedStr = expected.length == 1 ? "token '" + expected[0] + "'" : "tokens '" + expected.join("' or '") + "'";
+
+      if (token == undefined) {
+        throw new Error("Expected " + expectedStr + " but found nothing");
+      } else {
+        throw new Error("Expected " + expectedStr + " but found '" + token + "'");
+      }
+    }
+
+    function assertNotKeyword(token, expectedType = "variable") {
+      if (isKeyword(token)) {
+        throw new Error("Expected " + expectedType + " but found keyword '" + token + "'");
+      }
+    }
+
+    function isKeyword(token) {
+      return syntaxHighlighter.isKeyword(token);
+    }
+
+    function parseParameters(endToken = "") {
+      // Parameters separated by commas
+      let parameters = [];
+      let currentToken;
+      
+      while (true) {
+        currentToken = nextToken();
+        assertNotKeyword(currentToken, "parameter");
+        parameters.push(currentToken);
+
+        if (getToken(1) == ",") {
+          advanceToken();
+          continue;
+        }
+
+        if (endToken != "") expectToken(endToken);
+
+        break;
+      }
+
+      return parameters;
+    }
+
+    function parseVariable() {
+      let currentToken = nextToken();
+      assertNotKeyword(currentToken, "variable");
+      return currentToken;
+    }
+
+    function parseExpression(previousToken, previousExpression) {
+      let currentToken = nextToken();
+      if (currentToken == undefined) return undefined;
+      // print(currentToken);
+
+      if (currentToken == "exists") {
+        let isUnique = false;
+
+        // Check if it's a unique quantifier
+        if (getToken(1) == "unique") {
+          isUnique = true;
+          advanceToken();
+        }
+
+        let parameters = parseParameters("such that");
+        let expression = parseExpression();
+
+        if (!expression) {
+          throw new Error("Expected expression");
+        }
+
+        return { type: "exists", parameters, isUnique, expression };
+      } else if (currentToken == "for all") {
+        let parameters = parseParameters();
+        let expression = parseExpression();
+
+        if (!expression) {
+          throw new Error("Expected expression");
+        }
+
+        return { type: "for all", parameters, expression };
+      } else if (currentToken == "all") {
+        // Shortcut for "for all x if x is ... then x is ..."
+        let subject = nextToken();
+
+        if (!subject) {
+          throw new Error("Expected subject");
+        }
+        
+        assertNotKeyword(subject);
+        
+        let filter, filterType;
+        let futureToken = getToken(1);
+        if (futureToken == "that") {
+          advanceToken();
+          filterType = nextToken();
+          filter = nextToken();
+
+          if (!filter) {
+            throw new Error("Expected predicate");
+          }
+        }
+
+        let type = nextToken();
+
+        if (type != "is" && type != "is not") {
+          throw new Error("Expected 'is' or 'is not' but found '" + type + "'");
+        }
+
+        let predicate = nextToken();
+        
+        if (!predicate) {
+          throw new Error("Expected predicate");
+        }
+        
+        assertNotKeyword(predicate);
+        
+        let parameters = ["x"];
+        let condition = { type: "is", subject: "x", predicate: subject };
+        let consequence = { type: type, subject: "x", predicate: predicate };
+        
+        if (filter) {
+          let left = { type: "is", subject: "x", predicate: subject };
+          let right = { type: filterType, subject: "x", predicate: filter };
+          condition = { type: "and", left, right };
+        }
+
+        // let expression = { type: "if", condition, consequence };
+        let expression = { type: "or", left: TREE.negate(condition), right: consequence  };
+
+        return { type: "for all", parameters, expression };
+      } else if (currentToken == "some") {
+        // Shortcut for "exists x such that if x is ... then x is ..."
+        let isUnique = false;
+
+        // Check if it's a unique quantifier
+        if (getToken(1) == "unique") {
+          isUnique = true;
+          advanceToken();
+        }
+
+        let subject = nextToken();
+
+        if (!subject) {
+          throw new Error("Expected subject");
+        }
+        
+        assertNotKeyword(subject);
+        
+        let filter, filterType;
+        let futureToken = getToken(1);
+        if (futureToken == "that") {
+          advanceToken();
+          filterType = nextToken();
+          filter = nextToken();
+
+          if (!filter) {
+            throw new Error("Expected predicate");
+          }
+        }
+
+        let type = nextToken();
+
+        if (type != "is" && type != "is not") {
+          throw new Error("Expected 'is' or 'is not' but found '" + type + "'");
+        }
+
+        let predicate = nextToken();
+        
+        if (!predicate) {
+          throw new Error("Expected predicate");
+        }
+        
+        assertNotKeyword(predicate);
+        
+        let parameters = ["x"];
+        let condition = { type: "is", subject: "x", predicate: subject };
+        let consequence = { type: type, subject: "x", predicate: predicate };
+
+        if (filter) {
+          let left = { type: "is", subject: "x", predicate: subject };
+          let right = { type: filterType, subject: "x", predicate: filter };
+          condition = { type: "and", left, right };
+        }
+
+        // let expression = { type: "if", condition, consequence };
+        let expression = { type: "or", left: TREE.negate(condition), right: consequence  };
+
+        return { type: "exists", isUnique, parameters, expression };
+      } else if (currentToken == "if") {
+        let condition = parseExpression();
+
+        if (!condition) {
+          throw new Error("Expected condition");
+        }
+
+        expectToken("then");
+
+        let consequence = parseExpression();
+        
+        if (!consequence) {
+          throw new Error("Expected consequence");
+        }
+
+        // return { type: "if", condition, consequence };
+
+        return { type: "or", left: TREE.negate(condition), right: consequence };
+      } else if (currentToken == "is") {
+        let subject = previousToken;
+
+        if (!subject) {
+          throw new Error("Expected subject");
+        }
+
+        assertNotKeyword(subject);
+        
+        let predicate = nextToken();
+        
+        if (!predicate) {
+          throw new Error("Expected predicate");
+        }
+
+        assertNotKeyword(predicate);
+
+        return { type: "is", subject, predicate };
+      } else if (currentToken == "is not") {
+        let subject = previousToken;
+
+        if (!subject) {
+          throw new Error("Expected subject");
+        }
+
+        assertNotKeyword(subject);
+
+        let predicate = nextToken();
+
+        if (!predicate) {
+          throw new Error("Expected predicate");
+        }
+
+        assertNotKeyword(predicate);
+
+        return { type: "is not", subject, predicate };
+      } else if (currentToken == "and") {
+        let left = previousExpression;
+
+        if (!left) {
+          throw new Error("Expected left expression");
+        }
+
+        let right = parseExpression();
+
+        if (!right) {
+          throw new Error("Expected right expression");
+        }
+
+        return { type: "and", left, right };
+      } else if (currentToken == "or") {
+        let left = previousExpression;
+
+        if (!left) {
+          throw new Error("Expected left expression");
+        }
+
+        let right = parseExpression();
+
+        if (!right) {
+          throw new Error("Expected right expression");
+        }
+
+        return { type: "or", left, right };
+      } else {
+        if (previousToken != undefined) {
+          throw new Error("Unexpected token '" + previousToken + "'");
+        }
+        
+        let expression = parseExpression(currentToken);
+        let futureToken = getToken(1);
+
+        // Keep parsing if the next token is an "and" or "or"
+        if (futureToken == "or" || futureToken == "and") {
+          expression = parseExpression(currentToken, expression);
+        }
+
+        if (!expression) {
+          throw new Error("Expected expression");
+        }
+
+        return expression;
+      }
+    }
+
+    return parseExpression();
+  }
+
+  addToTree(parsed) {
+    // Check if the statement is already in the tree
+    for (let statement of this.tree) {
+      if (JSON.stringify(statement) == JSON.stringify(parsed)) {
+        return;
+      }
+    }
+
+    this.tree.push(parsed);
+  }
+
+  negate(expr) {
+    if (expr.type == "is") {
+      return { type: "is not", subject: expr.subject, predicate: expr.predicate };
+    } else if (expr.type == "is not") {
+      return { type: "is", subject: expr.subject, predicate: expr.predicate };
+    } else if (expr.type == "and") {
+      let left = expr.left;
+      let right = expr.right;
+      return { type: "or", left: this.negate(left), right: this.negate(right) };
+    } else if (expr.type == "or") {
+      let left = expr.left;
+      let right = expr.right;
+      return { type: "and", left: this.negate(left), right: this.negate(right) };
+    } else if (expr.type == "if") {
+      let condition = expr.condition;
+      let consequence = expr.consequence;
+      return { type: "and", left: condition, right: this.negate(consequence) };
+    } else if (expr.type == "exists") {
+      let parameters = expr.parameters;
+      let isUnique = expr.isUnique;
+      let expression = expr.expression;
+      return { type: "for all", parameters, isUnique, expression: this.negate(expression) };
+    } else if (expr.type == "for all") {
+      let parameters = expr.parameters;
+      let expression = expr.expression;
+      return { type: "exists", parameters, isUnique: false, expression: this.negate(expression) };
+    }
+  }
+
+  getAlternates(expr) {
+    let alternates = [];
+
+    if (expr.type == "exists") {
+      let parameters = expr.parameters;
+      let isUnique = expr.isUnique;
+      let expression = expr.expression;
+      
+      let alternates2 = this.getAlternates(expression);
+
+      for (let alternate of alternates2) {
+        alternates.push({ type: "exists", parameters, isUnique, expression: alternate });
+      }
+    } else if (expr.type == "for all") {
+      let parameters = expr.parameters;
+      let expression = expr.expression;
+      
+      let alternates2 = this.getAlternates(expression);
+
+      for (let alternate of alternates2) {
+        alternates.push({ type: "for all", parameters, expression: alternate });
+      }
+    } else if (expr.type == "if") {
+      let condition = expr.condition;
+      let consequence = expr.consequence;
+
+      // Don't forget not p or q
+
+      let alternates2 = this.getAlternates(condition);
+      let alternates3 = this.getAlternates(consequence);
+
+      for (let alt2 of alternates2) {
+        for (let alt3 of alternates3) {
+          alternates.push({ type: "if", condition: alt2, consequence: alt3 });
+
+          // Contrapositive
+          alternates.push({ type: "if", condition: this.negate(alt3), consequence: this.negate(alt2) });
+        }
+      }
+    } else {
+      alternates = [expr];
+    }
+
+    return alternates;
+  }
+
+  learn(parsed) {
+    this.addToTree(parsed);
+
+    let alternates = this.getAlternates(parsed);
+
+    for (let alternate of alternates) {
+      this.addToTree(alternate);
+    }
+  }
+
+  check(unknown) {
+    for (let known of this.tree) {
+      if (JSON.stringify(known) == JSON.stringify(unknown)) {
+        return true;
+      }
+    }
+
+    // Check opposite
+    let unknownOpposite = this.negate(unknown);
+    // print(unknownOpposite);
+    for (let known of this.tree) {
+      if (JSON.stringify(known) == JSON.stringify(unknownOpposite)) {
+        return false;
+      }
+    }
+
+    // Not enough information
+    return undefined;
+  }
+
+  reset() {
+    this.tree = [];
+  }
+}

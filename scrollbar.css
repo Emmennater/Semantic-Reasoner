@@ -1,0 +1,19 @@
+/* General scrollbar styles for WebKit-based browsers */
+::-webkit-scrollbar {
+  width: 6px; /* Adjust the width for vertical scrollbars */
+  height: 6px; /* Adjust the height for horizontal scrollbars */
+  cursor: pointer;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #555; /* Gray color for the thumb */
+  border-radius: 6px; /* Rounded corners */
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #333; /* Darker gray on hover */
+}
+
+::-webkit-scrollbar-track {
+  background: transparent; /* Transparent track */
+}

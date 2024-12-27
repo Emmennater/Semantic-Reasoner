@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.11.1/p5.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.11.1/addons/p5.sound.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="style.css">
+    <link rel="stylesheet" type="text/css" href="scrollbar.css">
+    <link rel="stylesheet" type="text/css" href="keywords.css">
+    <meta charset="utf-8" />
+
+  </head>
+  <body>
+    <script src="helper.js"></script>
+    <script src="expr.js"></script>
+    <script src="parse.js"></script>
+    <script src="reduce.js"></script>
+    <script src="reason.js"></script>
+    
+    <script src="logic.js"></script>
+    <script src="editor.js"></script>
+    <script src="sketch.js"></script>
+    <main>
+      <div id="textarea-container">
+        <div id="syntax" readonly></div>
+        <textarea id="editor">x is hot xor x is warm xor x is cold
+if x mixed with y is warm then y mixed with x is warm
+if x is hot and y is cold then x mixed with y is warm
+if x is cold and not x mixed with y is warm then not y is hot</textarea>
+      </div>
+      <button onclick="executeStatements()">Execute</button>
+    </main>
+  </body>
+</html>

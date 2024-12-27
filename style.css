@@ -1,0 +1,97 @@
+html, body {
+  margin: 0;
+  padding: 0;
+  background-color: #111;
+  overflow: hidden;
+}
+
+canvas {
+  display: block;
+}
+
+#textarea-container {
+  position: relative;
+  width: calc(100vw - 10px);
+  height: calc(100vh - 50px); /* Same height as individual textareas */
+}
+
+#syntax, #editor {
+  position: absolute;
+  margin: 0px;
+  padding: 4px 8px;
+  border: none;
+  outline: none;
+  top: 0;
+  left: 0;
+  width: calc(100% - 6px); /* Fill container width */
+  height: 100%; /* Fill container height */
+  font-size: 24px;
+  font-family: monospace;
+  resize: none;
+  white-space: pre;
+  overflow-wrap: normal;
+}
+
+#syntax:focus, #editor:focus {
+  outline: none;
+}
+
+#syntax {
+  z-index: 1;
+  background: black;
+  color: white;
+  user-select: none;
+  overflow: hidden;
+}
+
+#editor {
+  z-index: 2;
+  background: transparent;
+  color: transparent;
+  border-color: transparent;
+  caret-color: white;
+}
+
+button {
+  display: block;
+  margin: 10px 0px;
+  height: 40px;
+  width: 100px;
+  border-radius: 0px;
+  border: solid 1px #767676;
+  font-size: 16px;
+  padding: 2px 4px;
+  color: white;
+  background: black;
+  cursor: pointer;
+}
+
+button:active {
+  border-color: lime;
+  color: lime;
+  background: #010;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
