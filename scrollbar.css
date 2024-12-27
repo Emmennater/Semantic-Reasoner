@@ -1,19 +1,27 @@
 /* General scrollbar styles for WebKit-based browsers */
 ::-webkit-scrollbar {
-  width: 6px; /* Adjust the width for vertical scrollbars */
-  height: 6px; /* Adjust the height for horizontal scrollbars */
+  width: 14px; /* Adjust the width for vertical scrollbars */
+  height: 14px; /* Adjust the height for horizontal scrollbars */
   cursor: pointer;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #555; /* Gray color for the thumb */
-  border-radius: 6px; /* Rounded corners */
+  background: #333; /* Gray color for the thumb */
+  /* border-radius: 0px; Rounded corners */
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #333; /* Darker gray on hover */
+  background: #383838; /* Darker gray on hover */
+}
+
+::-webkit-scrollbar-thumb:active {
+  background: #454545; /* Darker gray on active */
 }
 
 ::-webkit-scrollbar-track {
   background: transparent; /* Transparent track */
+}
+
+::-webkit-scrollbar-corner {
+  background: transparent;
 }

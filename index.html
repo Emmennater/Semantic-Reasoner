@@ -7,6 +7,7 @@
     <link rel="stylesheet" type="text/css" href="scrollbar.css">
     <link rel="stylesheet" type="text/css" href="keywords.css">
     <meta charset="utf-8" />
+    <title>Semantic Reasoner</title>
 
   </head>
   <body>
@@ -20,14 +21,24 @@
     <script src="editor.js"></script>
     <script src="sketch.js"></script>
     <main>
-      <div id="textarea-container">
-        <div id="syntax" readonly></div>
-        <textarea id="editor">x is hot xor x is warm xor x is cold
-if x mixed with y is warm then y mixed with x is warm
-if x is hot and y is cold then x mixed with y is warm
-if x is cold and not x mixed with y is warm then not y is hot</textarea>
+      <div id="toolbar">
+        <button id="execute-all" onclick="executeStatements(true)">Execute All</button>
+        <button id="execute-last" onclick="executeStatements(false)">Execute Last</button>
+        <button id="reset" onclick="resetStatements()">Reset</button>
       </div>
-      <button onclick="executeStatements()">Execute</button>
+      <div id="editor-container">
+        <div id="line-numbers-container">
+          <div id="line-numbers"></div>
+        </div>
+        <div id="textarea-container">
+          <div id="syntax" readonly></div>
+          <textarea id="editor">if x is a cat then x is a mammal
+if not x is a mammal then not x is a cat
+x is a cat and not x is a mammal
+if x is a mammal then x is a cat
+</textarea>
+        </div>
+      </div>
     </main>
   </body>
 </html>

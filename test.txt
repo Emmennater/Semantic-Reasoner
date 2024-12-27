@@ -58,3 +58,8 @@ if x likes y then x shares interests with y
 if x shares classes with y then y shares classes with x
 if x shares interests with y then y shares interests with x
 if x shares classes with y and x likes y and y has a good school life then x has a bad school life
+- x is subgroup of y iff y is group and not x is empty and x is closed under times and x is closed under inverses
+x is closed under times iff y in x and z in x and w is y minus z and w in x
+x is closed under inverses iff y in x and z is inverse y in x and z in x
+not x is empty iff y in x
+y is inverse z in x iff y in x and z in x and w is y times z and v is z times y and w is identity in x and v is identity in x

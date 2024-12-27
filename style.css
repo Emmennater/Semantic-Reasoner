@@ -1,35 +1,80 @@
 html, body {
   margin: 0;
   padding: 0;
-  background-color: #111;
-  overflow: hidden;
+  height: 100%;
+  background-color: black;
+}
+
+main {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
 }
 
 canvas {
   display: block;
 }
 
+#editor-container {
+  display: flex;
+  flex: 1;
+  width: auto;
+  height: 100%;
+  overflow: hidden;
+}
+
+#line-numbers-container {
+  height: calc(100% - 2px);
+  width: 65px;
+  color: #999;
+  border: solid 1px #333;
+  border-top: none;
+  border-collapse: collapse;
+  background-color: #151515;
+  box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.5);
+  overflow: hidden;
+}
+
+#line-numbers {
+  margin: 0px;
+  padding: 2px 6px;
+  width: 50px;
+  text-align: right;
+  overflow-x: scroll;
+}
+
+#line-numbers div {
+  margin: 0px 0px;
+  padding: 0;
+  font-size: 24px;
+  font-family: monospace;
+}
+
 #textarea-container {
   position: relative;
-  width: calc(100vw - 10px);
-  height: calc(100vh - 50px); /* Same height as individual textareas */
+  display: flex;
+  flex: 1;
+  width: auto;
+  height: 100%; /* Same height as individual textareas */
 }
 
 #syntax, #editor {
   position: absolute;
+  display: block;
   margin: 0px;
-  padding: 4px 8px;
+  padding: 2px 8px;
   border: none;
   outline: none;
   top: 0;
   left: 0;
-  width: calc(100% - 6px); /* Fill container width */
+  width: 100%; /* Fill container width */
   height: 100%; /* Fill container height */
   font-size: 24px;
   font-family: monospace;
   resize: none;
   white-space: pre;
   overflow-wrap: normal;
+  box-sizing: border-box; /* Include padding and border in width and height */
 }
 
 #syntax:focus, #editor:focus {
@@ -37,15 +82,24 @@ canvas {
 }
 
 #syntax {
-  z-index: 1;
-  background: black;
+  background: #111;
   color: white;
   user-select: none;
-  overflow: hidden;
+  overflow: scroll;
+}
+
+#syntax::-webkit-scrollbar,
+#syntax::-webkit-scrollbar-corner,
+#syntax::-webkit-scrollbar-thumb,
+#syntax::-webkit-scrollbar-track,
+#line-numbers-container::-webkit-scrollbar,
+#line-numbers-container::-webkit-scrollbar-corner,
+#line-numbers-container::-webkit-scrollbar-thumb,
+#line-numbers-container::-webkit-scrollbar-track {
+  visibility: hidden;
 }
 
 #editor {
-  z-index: 2;
   background: transparent;
   color: transparent;
   border-color: transparent;
@@ -54,25 +108,36 @@ canvas {
 
 button {
   display: block;
-  margin: 10px 0px;
-  height: 40px;
-  width: 100px;
+  width: auto;
+  height: auto;
+  margin: 0px 0px;
+  padding: 8px 14px;
   border-radius: 0px;
-  border: solid 1px #767676;
+  border: solid 1px #444;
   font-size: 16px;
-  padding: 2px 4px;
   color: white;
-  background: black;
+  background: #090909;
   cursor: pointer;
 }
 
-button:active {
-  border-color: lime;
-  color: lime;
-  background: #010;
+button:hover {
+  background: #111;
 }
 
+button:active {
+  background: #191919;
+  /* border-color: lime; */
+  /* color: lime; */
+  /* background: #010; */
+}
 
+#toolbar {
+  display: flex;
+  gap: 12px;
+  padding: 8px;
+  background-color: #151515;
+  border: solid 1px #333;
+}
 
 
 

@@ -94,7 +94,7 @@ function reason(statement, axioms) {
 }
 
 function getVars(statement) {
-  const match = "xyzw";
+  const match = "qrstuvwxyz";
   const statementVars = [];
 
   for (let i = 0; i < match.length; i++) {
@@ -152,6 +152,15 @@ function reasonTF(statement, axioms) {
   const expr = parse(check);
   const literals = Array.from(getLiterals(expr));
 
+  // if (1) {
+    // print(`${literals.length} literals`);
+    // print(`${allPerms.length} axioms`);
+    // print(getCNF(expr));
+    // print(unparse(simplify(expr)));
+    // print(JSON.stringify(simplify(expr), null, 2));
+    // return undefined;
+  // }
+
   // Contradiction
   if (isContradiction(expr, literals)) return false;
 
@@ -159,7 +168,7 @@ function reasonTF(statement, axioms) {
   const checkNegated = known + " & (" + negatedUnknown + ")";
   const negatedExpr = parse(checkNegated);
 
-  // Proven to be true
+  // Proof by contradiction!!!
   if (isContradiction(negatedExpr, literals)) return true;
 
   // Not enough information

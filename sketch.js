@@ -5,40 +5,76 @@ function setup() {
   logicTree = new LogicTree();
 }
 
-function executeStatements() {
+function executeStatements(all = false) {
   // Reset logic tree
   logicTree.reset();
+  logicTree.assumeTrueButLast = !all;
 
   // Build logic tree
   const editor = document.getElementById("editor");
   const sentences = editor.value.split("\n");
   sentences.forEach(statement => statement.trim());
   
-  let lNum = 0;
-  for (let sentence of sentences) {
-    lNum++;
+  let lastLine = -1;
+  for (let i = 0; i < sentences.length; i++) {
+    if (sentences[i] == "") continue;
+    lastLine = i;
+  }
+
+  let results = [];
+  for (let i = 0; i < sentences.length; i++) {
+    let sentence = sentences[i];
     if (sentence == "") continue;
-    let result = logicTree.addSentence(sentence);
-    
-    switch (result) {
+    const isLast = i == lastLine;
+
+    try {
+      let result = logicTree.addSentence(sentence, isLast);
+      results.push(result);
+    } catch (err) {
+      results.push(err);
+    }
+  }
+
+  let lineHints = results.map((r, i) => {
+    let style = "";
+    let text = "";
+    let textStyle = "";
+
+    switch (r) {
       case true:
-        console.log("%cTrue statement", "color: lime");
+        style = 'background-color: #040';
         break;
       case false:
-        print("%cFalse statement", "color: red");
+        style = 'background-color: #400';
         break;
       case undefined:
-        print("%cNot enough information", "color: lightgray");
+        style = 'background-color: #222';
+        break;
+      case "assumed":
+        style = 'background-color: #222';
+        break;
+      default:
+        style = 'text-decoration: wavy underline; text-decoration-color: red';
+        text = r.message;
+        textStyle = 'color: red';
+        console.error(r);
+        break;
     }
 
-    // try {
-      // let result = logicTree.addStatement(statement);
-      // print(result);
-    // } catch (err) {
-    //   console.log("%cSyntax error on line " + lNum, "color:#DF3925;background:#1F0000;padding:2px 6px;");
-    //   console.log("%c" + err.message, "color:#DF3925;background:#1F0000;padding:2px 6px;");
-    // }
-  }
+    return {
+      line: i,
+      style,
+      text,
+      textStyle
+    };
+  });
+
+  syntaxHighlighter.updateHighlighter(lineHints);
+}
+
+function resetStatements() {
+  logicTree.reset();
+  syntaxHighlighter.updateHighlighter([]);
 }
 
 /*

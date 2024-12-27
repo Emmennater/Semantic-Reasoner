@@ -2,6 +2,7 @@
 class LogicTree {
   constructor() {
     this.axioms = [];
+    this.assumeTrueButLast = false;
   }
 
   addAxiom(axiom) {
@@ -11,21 +12,27 @@ class LogicTree {
     this.axioms.push(axiom);
   }
 
-  addSentence(sentence) {
+  addSentence(sentence, isLast) {
     let parsed = parseSentence(sentence);
-
     parsed = this.reformatLiterals(parsed);
     let statement = unparse(parsed);
 
+    // Assume true but last
+    if (this.assumeTrueButLast && !isLast) {
+      this.addAxiom(statement);
+      return "assumed";
+    }
+
+    // No axioms
     if (this.axioms.length === 0) {
-      this.axioms.push(statement);
+      this.addAxiom(statement);
       return undefined;
     }
 
     let result = reasonTF(statement, this.axioms);
 
     if (result === true) {
-      this.addAxiom(statement);
+      // this.addAxiom(statement);
       return true;
     } else if (result === false) {
       return false;
@@ -160,12 +167,21 @@ function parseSentence(sentence) {
     return subject;
   }
 
+  function parseNot() {
+    if (peek() == "not") {
+      consume();
+      return { type: "not", expr: parseNot() };
+    } else {
+      return parseAtom();
+    }
+  }
+
   function parseAnd() {
-    let left = parseAtom();
+    let left = parseNot();
 
     while (peek() == "and") {
       consume();
-      let right = parseAtom();
+      let right = parseNot();
       left = { type: "and", left, right };
     }
 
@@ -213,15 +229,31 @@ function parseSentence(sentence) {
     return left;
   }
 
+  function parseBiconditional() {
+    let left = parseOr();
+
+    while (peek() == "iff") {
+      consume();
+      let right = parseOr();
+      left = {
+        type: "and",
+        left: { type: "implication", condition: left, conclusion: right },
+        right: { type: "implication", condition: right, conclusion: left }
+      };
+    }
+
+    return left;
+  }
+
   function parseImplication() {
     if (peek() == "if") {
       consume();
-      let condition = parseOr();
+      let condition = parseBiconditional();
       expect("then");
-      let conclusion = parseOr();
+      let conclusion = parseBiconditional();
       return { type: "implication", condition, conclusion };
     } else {
-      return parseOr();
+      return parseBiconditional();
     }
   }
 

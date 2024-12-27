@@ -26,6 +26,7 @@ class SyntaxHighlighter {
     
     this.highlighter.addPhrase("not", "linking-verb");
     this.highlighter.addPhrase("if", "implication");
+    this.highlighter.addPhrase("iff", "implication");
     this.highlighter.addPhrase("then", "implication");
     this.highlighter.addPhrase("and", "junction");
     this.highlighter.addPhrase("or", "junction");
@@ -44,18 +45,21 @@ class SyntaxHighlighter {
   initEditor() {
     const editor = document.getElementById("editor");
     const syntax = document.getElementById("syntax");
+    const lineNumbersContainer = document.getElementById("line-numbers-container");
+    const textareaContainer = document.getElementById("textarea-container");
 
     // Update on edits
     editor.addEventListener("input", (e) => {
-      this.highlighter.highlight(editor.value, syntax);
+      this.updateEditor();
     });
 
-    this.highlighter.highlight(editor.value, syntax);
+    this.updateEditor();
     
     // Synchronize scrollTop between textarea1 and textarea2
     editor.addEventListener("scroll", () => {
       syntax.scrollTop = editor.scrollTop;
       syntax.scrollLeft = editor.scrollLeft;
+      lineNumbersContainer.scrollTop = editor.scrollTop;
     });
     
     // Fix indenting with tabs
@@ -75,6 +79,31 @@ class SyntaxHighlighter {
         this.highlighter.highlight(editor.value, syntax);
       }
     });
+  }
+
+  updateEditor(lineHints = []) {
+    this.updateHighlighter(lineHints);
+    this.updateLineNumbers();
+  }
+
+  updateHighlighter(lineHints) {
+    const editor = document.getElementById("editor");
+    const syntax = document.getElementById("syntax");
+    this.highlighter.highlight(editor.value, syntax, lineHints);
+  }
+
+  updateLineNumbers() {
+    const lineNumbers = document.getElementById("line-numbers");
+    const editor = document.getElementById("editor");
+    const numberOfLines = editor.value.split("\n").length;
+
+    lineNumbers.innerHTML = "";
+
+    for (let i = 0; i < numberOfLines; i++) {
+      const line = document.createElement("div");
+      line.textContent = i + 1;
+      lineNumbers.appendChild(line);
+    }
   }
 }
 
@@ -99,7 +128,7 @@ class Highlighter {
   }
 
   // Highlights the content by wrapping matching phrases in <span> elements with class names
-  highlight(text, targetElement) {
+  highlight(text, targetElement, lineHints = []) {
     targetElement.innerHTML = ""; // Clear the target element before adding new content
 
     let highlightedText = ""; // To accumulate the final highlighted text
@@ -119,6 +148,29 @@ class Highlighter {
       const { className } = this.phrases.find(({ phrase }) => phrase === match);
       return `<span class="${className}">${match}</span>`;
     });
+
+    const endLines = [0, ...findAllOccurrences(highlightedText, '\n'), highlightedText.length];
+    
+    // Example
+    // lineHints = [{
+    //   line: 0,
+    //   style: 'background-color: darkred',
+    //   text: 'error',
+    //   textStyle: 'background-color: red'
+    // }];
+
+    for (let i = lineHints.length - 1; i >= 0; i--) {
+      const msg = lineHints[i];
+      const { line, style, text, textStyle } = msg;
+      const start = endLines[line];
+      const end = endLines[line + 1];
+      
+      // Modify the style of the line region
+      highlightedText = highlightedText.slice(0, start) +
+      `<span style="${style}">${highlightedText.slice(start, end)}</span>` +
+      `<span style="${textStyle}"> ${text}</span>` +
+      highlightedText.slice(end);
+    }
 
     // Set the accumulated highlighted text into the target element
     targetElement.innerHTML = highlightedText + "<br>";

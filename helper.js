@@ -39,3 +39,15 @@ function permute(arr) {
   generatePermutations([], arr);
   return result;
 }
+
+function findAllOccurrences(str, substr) {
+  const indices = [];
+  let index = str.indexOf(substr);
+
+  while (index !== -1) {
+    indices.push(index);
+    index = str.indexOf(substr, index + 1);
+  }
+
+  return indices;
+}
