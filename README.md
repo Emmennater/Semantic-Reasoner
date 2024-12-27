@@ -3,6 +3,7 @@ Checks if statements are true, false, or not enough information to say.
 ## Documentation
 Code comments `# Message`<br>
 If then `if ... then ...`<br>
+If and only if `... iff ... `<br>
 Not `not ...`<br>
 And / Or / Xor `... and ...`<br>
 Variables `xyzwqrstuv`<br>
