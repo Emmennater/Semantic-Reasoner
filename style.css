@@ -93,6 +93,7 @@ canvas {
 #syntax::-webkit-scrollbar-corner,
 #syntax::-webkit-scrollbar-thumb,
 #syntax::-webkit-scrollbar-track,
+#editor::-webkit-scrollbar,
 #line-numbers-container::-webkit-scrollbar,
 #line-numbers-container::-webkit-scrollbar-corner,
 #line-numbers-container::-webkit-scrollbar-thumb,
@@ -105,6 +106,7 @@ canvas {
   color: transparent;
   border-color: transparent;
   caret-color: white;
+  overflow: scroll;
 }
 
 button {
