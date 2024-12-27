@@ -63,3 +63,22 @@ x is closed under times iff y in x and z in x and w is y minus z and w in x
 x is closed under inverses iff y in x and z is inverse y in x and z in x
 not x is empty iff y in x
 y is inverse z in x iff y in x and z in x and w is y times z and v is z times y and w is identity in x and v is identity in x
+- if x is y then y is x
+if x is y and y is z then x is z
+if x is y and y is oscar then x is oscar
+if x is y and y is tree then x is tree
+if x is y and y is tony then x is tony
+if x is y and y is bill then x is bill
+if x is y and y is sammy then x is sammy
+if x is y and y is slats then x is slats
+if x is y and y is stretch then x is stretch
+x is bill xor x is ernie xor x is oscar xor x is sammy xor x is tony
+x is slats xor x is stretch xor x is tiny xor x is tower xor x is tree
+if x is oscar and y is tree then x is taller than y
+if x is tree and y is tony then x is taller than y
+if x is bill and y is sammy then x is taller than y
+if x is bill and y is slats then y is taller than x
+if x is stretch and y is oscar then x is taller than y
+if x is tallest then x is taller than y or y is x
+if x is stretch or y then not x is tallest
+if x is stretch and not y is x then x is taller than y
