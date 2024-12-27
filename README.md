@@ -25,6 +25,11 @@ You can invoke a preposition with any variable you like and it will act the same
 y is cool and not y is lame
 ```
 If you spell the premise differently it will not mean the same thing. For example, `x is tallest` and `x is the tallest`. These will be treated as completely different statements about `x`.
+### Using Multiple Variables
+You can use multiple variables inside the same preposition to build complex relationships.
+```lua
+if x is tallest then x is taller than y or y is x
+```
 ## Final Notes
 It can be easy to forget about things you may think are true in your head, but not explicitly stated in code. Make sure you identify all key relationships.<br>
 ### Bad Example
