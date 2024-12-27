@@ -16,6 +16,7 @@ class SyntaxHighlighter {
     this.highlighter.addPhrase("unique", "quantifier");
     this.highlighter.addPhrase("such that", "quantifier");
     this.highlighter.addPhrase("that", "linking-verb");
+    this.highlighter.addRegex(/#.*/, "comment");
     
     // this.highlighter.addPhrase("is", "linking-verb");
     // this.highlighter.addPhrase("is not", "linking-verb");
@@ -110,33 +111,34 @@ class SyntaxHighlighter {
 class Highlighter {
   constructor() {
     this.phrases = [];
+    this.regexes = [];
     this.defaultStyle = {
-      textColor: 'lightgray', // lightgray black
+      textColor: 'lightgray',
       backColor: 'transparent',
       fontStyle: 'italic'
     };
   }
 
-  // Adds a phrase and its corresponding class for highlighting
   addPhrase(phrase, className) {
     this.phrases.push({ phrase, className });
   }
 
-  // Escapes special characters for use in a regular expression
+  addRegex(regex, className) {
+    this.regexes.push({ regex: new RegExp(regex, 'g'), className });
+  }
+
   escapeRegExp(string) {
     return string.replace(/[.*+?^=!:${}()|[\]\\/]/g, "\\$&");
   }
 
-  // Highlights the content by wrapping matching phrases in <span> elements with class names
   highlight(text, targetElement, lineHints = []) {
-    targetElement.innerHTML = ""; // Clear the target element before adding new content
+    targetElement.innerHTML = "";
+    let highlightedText = text;
 
-    let highlightedText = ""; // To accumulate the final highlighted text
-
-    // Sort phrases by length in descending order to avoid partial matches
+    // Sort phrases by length in descending order
     this.phrases.sort((a, b) => b.phrase.length - a.phrase.length);
 
-    // Create a combined regex to match all phrases as whole words
+    // Process phrases
     const combinedRegex = new RegExp(
       this.phrases
         .map(({ phrase }) => `\\b${this.escapeRegExp(phrase)}\\b`)
@@ -144,35 +146,34 @@ class Highlighter {
       'g'
     );
 
-    highlightedText = text.replace(combinedRegex, (match) => {
-      const { className } = this.phrases.find(({ phrase }) => phrase === match);
-      return `<span class="${className}">${match}</span>`;
+    if (this.phrases.length > 0) {
+      highlightedText = highlightedText.replace(combinedRegex, (match) => {
+        const { className } = this.phrases.find(({ phrase }) => phrase === match);
+        return `<span class="${className}">${match}</span>`;
+      });
+    }
+
+    // Process regexes
+    this.regexes.forEach(({ regex, className }) => {
+      highlightedText = highlightedText.replace(regex, (match) => {
+        return `<span class="${className}">${match}</span>`;
+      });
     });
 
     const endLines = [0, ...findAllOccurrences(highlightedText, '\n'), highlightedText.length];
     
-    // Example
-    // lineHints = [{
-    //   line: 0,
-    //   style: 'background-color: darkred',
-    //   text: 'error',
-    //   textStyle: 'background-color: red'
-    // }];
-
     for (let i = lineHints.length - 1; i >= 0; i--) {
       const msg = lineHints[i];
       const { line, style, text, textStyle } = msg;
       const start = endLines[line];
       const end = endLines[line + 1];
       
-      // Modify the style of the line region
       highlightedText = highlightedText.slice(0, start) +
       `<span style="${style}">${highlightedText.slice(start, end)}</span>` +
       `<span style="${textStyle}"> ${text}</span>` +
       highlightedText.slice(end);
     }
 
-    // Set the accumulated highlighted text into the target element
     targetElement.innerHTML = highlightedText + "<br>";
   }
 }

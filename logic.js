@@ -14,6 +14,11 @@ class LogicTree {
 
   addSentence(sentence, isLast) {
     let parsed = parseSentence(sentence);
+
+    if (parsed === "comment") {
+      return "comment";
+    }
+
     parsed = this.reformatLiterals(parsed);
     let statement = unparse(parsed);
 
@@ -258,6 +263,10 @@ function parseSentence(sentence) {
   }
 
   function parseExpression() {
+    if (peek() == "#") {
+      return "comment";
+    }
+
     return parseImplication();
   }
 

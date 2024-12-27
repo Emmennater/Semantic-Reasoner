@@ -29,6 +29,7 @@ function executeStatements(all = false) {
 
     try {
       let result = logicTree.addSentence(sentence, isLast);
+      if (result === "comment") continue;
       results.push([result, i]);
     } catch (err) {
       results.push(err);
