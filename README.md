@@ -16,11 +16,11 @@ Not `not ...`<br>
 And / Or / Xor `... and ...`<br>
 Variables `xyzwqrstuv`<br>
 ## Examples
-See how `not` goes before `x is lame` which is now a premise that can be used.
+See how `not` goes before `x is lame` which is now a preposition that can be used.
 ```lua
 if x is cool then not x is lame
 ```
-You can invoke `is lame` with any variable you like and it will act the same.
+You can invoke a preposition with any variable you like and it will act the same.
 ```lua
 y is cool and not y is lame
 ```
