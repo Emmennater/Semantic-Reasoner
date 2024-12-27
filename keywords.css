@@ -1,13 +1,16 @@
 .quantifier {
   color: red;
+  /* text-shadow: 0px 0px 7px #ff000070; */
 }
 
 .linking-verb {
   color: lime;
+  /* text-shadow: 0px 0px 7px #00ff0070; */
 }
 
 .implication {
-  color: magenta; 
+  color: magenta;
+  /* text-shadow: 0px 0px 7px #ff00ff70; */
 }
 
 .brackets {
@@ -16,4 +19,5 @@
 
 .junction {
   color: aqua;
+  /* text-shadow: 0px 0px 7px #00ffff70; */
 }
