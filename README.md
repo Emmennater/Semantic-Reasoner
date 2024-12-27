@@ -1,5 +1,13 @@
 # Semantic Reasoner
 Checks if statements are true, false, or not enough information to say.
+After you click execute some results will show up.
+- Gray means there is <b>not enough information</b> to be proven.
+- Red means the statement is <b>contradictory</b>.
+- Green means the statement is <b> proven.</b>
+
+Execute all will try to prove each statement one after another.
+Execute last will assume everything before it and try to prove the final statement.
+Reset will clear all text annotations.
 ## Documentation
 Code comments `# Message`<br>
 If then `if ... then ...`<br>
