@@ -14,7 +14,7 @@ function executeStatements(all = false) {
   const editor = document.getElementById("editor");
   const sentences = editor.value.split("\n");
   sentences.forEach(statement => statement.trim());
-  
+
   let lastLine = -1;
   for (let i = 0; i < sentences.length; i++) {
     if (sentences[i] == "") continue;
@@ -29,13 +29,14 @@ function executeStatements(all = false) {
 
     try {
       let result = logicTree.addSentence(sentence, isLast);
-      results.push(result);
+      results.push([result, i]);
     } catch (err) {
       results.push(err);
     }
   }
 
-  let lineHints = results.map((r, i) => {
+  let lineHints = results.map((v) => {
+    let [r, i] = v;
     let style = "";
     let text = "";
     let textStyle = "";
