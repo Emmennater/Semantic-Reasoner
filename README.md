@@ -36,9 +36,8 @@ if x is living and not x is a plant then not x is an animal
 ```lua
 # Dont forget to state mutual exclusion!
 if x is a plant then not x is an animal
-if x is an animal then not x is a plant
 if x is living then x is a plant or x is an animal
-if x is living and not x is a plant then not x is an animal
+if x is living and not x is a plant then x is an animal
 ```
 You can chain `xor` to do something similar.
 ```
