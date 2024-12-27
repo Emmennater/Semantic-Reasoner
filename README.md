@@ -30,14 +30,16 @@ It can be easy to forget about things you may think are true in your head, but n
 ### Bad Example
 ```lua
 if x is living then x is a plant or x is an animal
-if x is living and not x is a plant then not x is an animal
+if not x is eating then x is a plant or not x is living
+if x is a mammal and not x is eating then not x is living
 ```
 ### Good Example
 ```lua
 # Dont forget to state mutual exclusion!
-if x is a plant then not x is an animal
+if x is a mammal then not x is a plant
 if x is living then x is a plant or x is an animal
-if x is living and not x is a plant then x is an animal
+if not x is eating then x is a plant or not x is living
+if x is a mammal and not x is eating then not x is living
 ```
 You can chain `xor` to do something similar.
 ```
