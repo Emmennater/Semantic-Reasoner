@@ -15,6 +15,7 @@ If and only if `... iff ... `<br>
 Not `not ...`<br>
 And / Or / Xor `... and ...`<br>
 Variables `xyzwqrstuv`<br>
+Parenthesis `if x then (if y then z)`
 ## Examples
 See how `not` goes before `x is lame` which is now a preposition that can be used.
 ```lua
