@@ -170,11 +170,6 @@ class Highlighter {
       });
     });
 
-    // print all highlighted ranges
-    for (const [start, end] of highlightedRanges) {
-      print(`(${highlightedText.slice(start, end)})`);
-    }
-
     const endLines = [0, ...findAllOccurrences(highlightedText, '\n'), highlightedText.length];
 
     // Process line hints
