@@ -28,33 +28,37 @@ Parenthesis `if x then (if y then z)`
 ## Examples
 ### Prepositions
 [Prepositions](#terms) don't require any variables. They are just general statements.
-The keyword `not` is used before a [preposition](#terms) / [proposition](#terms).
-```python
+The keyword `not` is used before the preposition.
+```plaintext
 if sally is home then not sally is at work
 ```
 ### Propositions
-The phrase `x is lame` is a [proposition](#terms). Once defined, `is lame` is now a [linking verb](#terms) that can be referenced in the future.
-```python
+The phrase `x is lame` is a [proposition](#terms). Once defined, a proposition can be referenced in the future.<br>
+(Note: The linking verb is not the same when using variables vs substituting subjects / predicates)
+```plaintext
 if x is cool then not x is lame
 ```
 You can invoke a [linking verb](#terms) with any [variable](#doc) you like and it will work the same.
-```python
+```plaintext
 y is cool and not y is lame
 ```
-If you spell the [linking verb](#terms) differently it will not mean the same thing. For example, `x is tallest` and `x is the tallest`. These will be treated as completely different statements about `x`.
+If you spell the linking verb differently it will not mean the same thing. For example, `x is tallest` and `x is the tallest`. These will be treated as completely different statements about `x`. Same for `x is cool` and `x is y`. Just because `y is cool` is true doesn't mean `x is cool` is. If you want this behavior see the example below:
+```plaintext
+if x is cool and x is y then y is cool
+```
 ### Using Multiple Variables
-You can use multiple variables inside the same [preposition](#terms) to build complex relationships.
-```python
+You can use multiple variables inside the same preposition to build complex relationships.
+```plaintext
 if x is tallest then x is taller than y or y is x
 ```
 ### Equivalence Relations
-When using [linking verbs](#terms) it is often important to specify which properties of an [equivalence relation](https://en.wikipedia.org/wiki/Equivalence_relation) it satisfies. If `~` is our [linking verb](#terms) then,
+When using linking verbs it is often important to specify which properties of an [equivalence relation](https://en.wikipedia.org/wiki/Equivalence_relation) it satisfies. If `~` is our linking verb then,
 - Reflexive `a ~ a`
 - Symmetric `a ~ b ⇒ b ~ a`
 - Transitive `a ~ b ∧ b ~ c ⇒ a ~ c`
 
 Here is how they are defined for `is`
-```python
+```plaintext
 x is x                            # Reflexive
 if x is y then y is x             # Symmetric
 if x is y and y is z then x is z  # Transitive
@@ -62,13 +66,13 @@ if x is y and y is z then x is z  # Transitive
 ## Final Notes
 It can be easy to forget about things you may think are true in your head, but not explicitly stated in code. Make sure you identify all key relationships.<br>
 ### Bad Example
-```python
+```plaintext
 if x is living then x is a plant or x is an animal
 if not x is eating then x is a plant or not x is living
 if x is a mammal and not x is eating then not x is living
 ```
 ### Good Example
-```python
+```plaintext
 # Dont forget to state mutual exclusion!
 if x is a mammal then not x is a plant
 if x is living then x is a plant or x is an animal
