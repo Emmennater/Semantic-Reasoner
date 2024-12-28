@@ -1,6 +1,6 @@
 # Semantic Reasoner
 Checks if statements are true, false, or inconclusive.
-After you click execute some results will show up.
+After you click execute, any results or errors will show up.
 - Gray means the statement <b>inconclusive</b>.
 - Red means the statement is <b>contradictory</b>.
 - Green means the statement is <b> proven</b>.
@@ -48,7 +48,7 @@ If you spell the proposition differently (aside from the variable) it will not m
 if x is cool and x is y then y is cool
 ```
 ### Using Multiple Variables
-You can use multiple variables inside the same preposition to build complex relationships.
+You can use multiple variables inside the same proposition to build complex relationships.
 ```
 if x is tallest then x is taller than y or y is x
 ```
