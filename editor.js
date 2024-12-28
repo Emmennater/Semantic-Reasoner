@@ -164,11 +164,23 @@ class Highlighter {
           return match;
         }
         const retVal = `<span class="${className}">${match}</span>`;
-        const newOffset = retVal.length - match.length - 7;
+        const newOffset = offset + retVal.length - match.length - 7;
         addHighlightRange(newOffset, newOffset + match.length);
         return retVal;
       });
     });
+
+    // Logging highlighted ranges
+    // let lastIndex = 0;
+    // for (let [start, end] of highlightedRanges) {
+    //   const before = highlightedText.slice(lastIndex, start);
+    //   const highlighted = highlightedText.slice(start, end);
+    //   const after = highlightedText.slice(end);
+      
+    //   console.log(before + `%c${highlighted}%c${after}`, `background-color: red`, ``);
+
+    //   lastIndex = end;
+    // }
 
     const endLines = [0, ...findAllOccurrences(highlightedText, '\n'), highlightedText.length];
 
