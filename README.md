@@ -10,10 +10,10 @@ After you click execute, any results or errors will show up.
 - **Reset** will clear all text annotations.
 ## Documentation <a id="doc"></a>
 Code comments `# Message`<br>
-If then `if ... then ...`<br>
+If then `if ... then ...` or `... => ...`<br>
 If and only if `... iff ... `<br>
-Not `not ...`<br>
-And / Or / Xor `... and ...`<br>
+Not `not ...` or `~...`<br>
+And / Or / Xor `... and ...` also (&,|)<br>
 Variables `xyzwqrstuv`<br>
 Parenthesis `if x then (if y then z)`
 ## Terms <a id="terms"></a>

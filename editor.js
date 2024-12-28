@@ -26,11 +26,15 @@ class SyntaxHighlighter {
     // this.highlighter.addPhrase("is not an", "linking-verb");
 
     this.highlighter.addPhrase("not", "linking-verb");
+    this.highlighter.addRegex(/~/, "linking-verb", "~");
     this.highlighter.addPhrase("if", "implication");
+    this.highlighter.addRegex(/=>/, "implication", "= >");
     this.highlighter.addPhrase("iff", "implication");
     this.highlighter.addPhrase("then", "implication");
     this.highlighter.addPhrase("and", "junction");
+    this.highlighter.addRegex(/\&/, "junction", "&");
     this.highlighter.addPhrase("or", "junction");
+    this.highlighter.addRegex(/\|/, "junction", "|");
     this.highlighter.addPhrase("xor", "junction");
 
 
@@ -125,7 +129,12 @@ class Highlighter {
     this.regexes.push({ regex: new RegExp(`\\b${this.escapeRegExp(phrase)}\\b`, 'g'), className });
   }
 
-  addRegex(regex, className) {
+  addRegex(regex, className, keyword = "") {
+    // If regex matches string then add it to phrases
+    if (keyword) {
+      this.phrases.push({ phrase: keyword, className });
+    }
+
     this.regexes.push({ regex: new RegExp(regex, 'g'), className });
   }
 

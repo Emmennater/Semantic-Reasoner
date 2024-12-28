@@ -173,7 +173,7 @@ function parseSentence(sentence) {
   }
 
   function parseNot() {
-    if (peek() == "not") {
+    if (peek() == "not" || peek() == "~") {
       consume();
       return { type: "not", expr: parseNot() };
     } else {
@@ -184,7 +184,7 @@ function parseSentence(sentence) {
   function parseAnd() {
     let left = parseNot();
 
-    while (peek() == "and") {
+    while (peek() == "and" || peek() == "&") {
       consume();
       let right = parseNot();
       left = { type: "and", left, right };
@@ -225,7 +225,7 @@ function parseSentence(sentence) {
   function parseOr() {
     let left = parseXor();
 
-    while (peek() == "or") {
+    while (peek() == "or" || peek() == "|") {
       consume();
       let right = parseXor();
       left = { type: "or", left, right };
@@ -237,7 +237,7 @@ function parseSentence(sentence) {
   function parseBiconditional() {
     let left = parseOr();
 
-    while (peek() == "iff") {
+    if (peek() == "iff") {
       consume();
       let right = parseOr();
       left = {
@@ -245,6 +245,10 @@ function parseSentence(sentence) {
         left: { type: "implication", condition: left, conclusion: right },
         right: { type: "implication", condition: right, conclusion: left }
       };
+    } else if (peek() == "=>") {
+      consume();
+      let right = parseOr();
+      left = { type: "implication", condition: left, conclusion: right };
     }
 
     return left;
@@ -321,6 +325,8 @@ function parseSentence(sentence) {
         return "is not";
       case "every":
         return "all";
+      case "= >":
+        return "=>";
       default:
         return token;
     }
@@ -331,7 +337,6 @@ function parseSentence(sentence) {
   // print(prettyTable(unparse(parsed)));
   // print(JSON.stringify(parsed, null, 2));
   // print(unparse(parsed));
-
 
   return parsed;
 }
