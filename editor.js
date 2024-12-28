@@ -137,50 +137,61 @@ class Highlighter {
     targetElement.innerHTML = "";
     let highlightedText = text;
 
-    // Create a map to track positions of existing highlights
-    const highlightedRanges = new Map();
-
     // Helper function to check if a position is already highlighted
     const isAlreadyHighlighted = (start, end) => {
-      for (const [existingStart, existingEnd] of highlightedRanges.entries()) {
-        if (start >= existingStart && end <= existingEnd) {
+      // Regex search for span tags that encapsulate the highlighted text
+      const regex = /<span[^>]*>(.*?)<\/span>/g;
+      
+      const spans = highlightedText.matchAll(regex);
+      
+      for (const span of spans) {
+        const spanStart = span.index;
+        const spanEnd = span.index + span[0].length;
+        
+        if (spanStart <= start && spanEnd >= end) {
           return true;
         }
       }
+      
       return false;
     };
 
-    // Helper function to add a highlight range
-    const addHighlightRange = (start, end) => {
-      highlightedRanges.set(start, end);
-    };
-
     // Process regexes
-    this.regexes.forEach(({ regex, className }) => {
+    for (let i = 0; i < this.regexes.length; i++) {
+      const { regex, className } = this.regexes[i];
       const globalRegex = new RegExp(regex.source, regex.flags + (regex.flags.includes('g') ? '' : 'g'));
+
       highlightedText = highlightedText.replace(globalRegex, (match, ...args) => {
         const offset = args[args.length - 2];
+
         if (isAlreadyHighlighted(offset, offset + match.length)) {
           return match;
         }
+        
         const retVal = `<span class="${className}">${match}</span>`;
-        const newOffset = offset + retVal.length - match.length - 7;
-        addHighlightRange(newOffset, newOffset + match.length);
         return retVal;
       });
-    });
+    }
 
     // Logging highlighted ranges
+    // const output = [];
+    // const colors = [];
+    // const colArr = ["red", "green", "blue"];
+    // let colIdx = 0;
     // let lastIndex = 0;
-    // for (let [start, end] of highlightedRanges) {
+    // for (let [start, end] of Array.from(highlightedRanges).sort((a, b) => a[1] - b[1])) {
     //   const before = highlightedText.slice(lastIndex, start);
     //   const highlighted = highlightedText.slice(start, end);
-    //   const after = highlightedText.slice(end);
-      
-    //   console.log(before + `%c${highlighted}%c${after}`, `background-color: red`, ``);
 
-    //   lastIndex = end;
+    //   output.push(`%c${before}`);
+    //   colors.push(`background-color: transparent`);
+    //   output.push(`%c${highlighted}`);
+    //   colors.push(`background-color: ${colArr[(colIdx++) % 3]}`);
+    //   lastIndex = max(end, lastIndex);
     // }
+    
+    // output.push(highlightedText.slice(lastIndex));
+    // console.log(output.join(''), ...colors);
 
     const endLines = [0, ...findAllOccurrences(highlightedText, '\n'), highlightedText.length];
 

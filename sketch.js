@@ -32,7 +32,7 @@ function executeStatements(all = false) {
       if (result === "comment") continue;
       results.push([result, i]);
     } catch (err) {
-      results.push(err);
+      results.push([err, i]);
     }
   }
 
